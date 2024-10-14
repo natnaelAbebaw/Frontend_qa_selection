@@ -3,7 +3,7 @@ name: Chromatic
 on:
   push:
     branches:
-      - natnaelAbebaw
+      - main
   pull_request:
     branches:
       - main
