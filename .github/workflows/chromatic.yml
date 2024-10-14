@@ -1,0 +1,36 @@
+name: Chromatic
+
+on:
+  push:
+    branches:
+      - natnaelAbebaw
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  chromatic:
+    name: Run Chromatic
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Run Chromatic
+        uses: chromaui/action@latest
+        with:
+          projectToken: "chpt_fc9c0292d908fe1"
+          exitZeroOnChanges: true
+          onlyChanged: true
+          zip: true

@@ -1,0 +1,41 @@
+name: Run Cypress Tests
+
+on:
+  push:
+    branches:
+      - natnaelAbebaw
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.11.1]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Build the app
+        run: npm run build
+
+      - name: Start the Vue.js server
+        run: npm run dev &
+
+      - name: Wait for server to be ready
+        run: npx wait-on http://localhost:3000 --timeout 10000
+
+      - name: Run Cypress Tests Sequentially
+        run: npx cypress run --spec cypress/e2e/**/*.cy.js --headless --env updateSnapshots=true
